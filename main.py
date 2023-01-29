@@ -29,7 +29,9 @@ def stats():
 @app.route('/api/v1/attack', methods=['GET'])
 def vm():
     vm_id = request.args.get('vm_id')
-    data = model.get_source_vms(db_file_path, vm_id)
+    if not (data := cache.get(vm_id)):
+        data = model.get_source_vms(db_file_path, vm_id)
+        cache.put(vm_id, data)
     app.logger.info("/vm endpoint called with vm_id: "+vm_id)
     return jsonify(data)
 
