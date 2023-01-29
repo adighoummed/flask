@@ -1,5 +1,4 @@
-# from ds.doubly_linked_list import DoublyLinkedList, Node
-from typing import Optional, List, Dict
+from typing import List, Dict
 
 from ds.queue import Queue, Node
 
@@ -22,8 +21,7 @@ class LRUCache:
     def put(self, key: str, value: List[str]) -> None:
         if key not in self.map:
             if self.queue.get_size() == self.capacity:
-                head = self.queue.dequeue_from_last()
-                del self.map[head.key]
-            # node = Node(key, value)
+                head_key = self.queue.dequeue_from_last()
+                del self.map[head_key]
             new_node = self.queue.enqueue_at_first(key, value)
             self.map[key] = new_node

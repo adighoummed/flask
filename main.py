@@ -14,7 +14,7 @@ app = Flask(__name__)
 cache = None
 db_file_path = ''
 request_count = 0
-average_processing_time = 0.0
+total_processing_time = 0.0
 
 LOG_FILE = 'app.log'
 LOG_FOLDER = 'logs'
@@ -27,17 +27,25 @@ def start_timer():
 
 @app.after_request
 def end_timer(response):
+    global request_count
+    global total_processing_time
+
+    request_count += 1
     processing_time = time.time() - request.start_time
+    total_processing_time += processing_time
     app.logger.debug(f'Processing time: {processing_time:.5f} seconds')
+
     return response
 
 
 @app.route('/api/v1/stats', methods=['GET'])
 def stats():
-    vm_count = 2
-    request_count = 1120232
-    average_request_time = 0.003032268166772597
-    data = {"vm_count":vm_count,"request_count":request_count,"average_request_time":average_request_time}
+    average_request_time = total_processing_time / request_count
+    data = {
+        "vm_count": vm_count,
+        "request_count": request_count,
+        "average_request_time": average_request_time
+    }
     app.logger.info("/stats endpoint called")
     return jsonify(data)
 
@@ -49,8 +57,7 @@ def vm():
         data = model.get_source_vms(db_file_path, vm_id)
         cache.put(vm_id, data)
 
-    app.logger.info("/vm endpoint called with vm_id: "+vm_id)
-    # app.logger.debug('blablabla')
+    app.logger.info(f"/vm endpoint called with {vm_id=}")
 
     return jsonify(data)
 
@@ -64,9 +71,9 @@ if __name__ == '__main__':
         print("[ERROR]: The file path provided does not exist.")
         sys.exit(1)
 
-    vms_count = model.count_vms(db_file_path)
-    cache = LRUCache(max(int(vms_count * 70 / 100), 1))
-    logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG)
+    vm_count = model.count_vms(db_file_path)
+    cache = LRUCache(max(int(vm_count * 70 / 100), 1))
+    logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(name)s - %(message)s')
     logger = logging.getLogger(__name__)
 
     app.run(port=80)
