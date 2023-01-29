@@ -3,6 +3,7 @@ import datetime
 import logging
 import os
 import sys
+import time
 
 from flask import Flask, jsonify, request
 
@@ -12,8 +13,23 @@ from ds.lru_cache import LRUCache
 app = Flask(__name__)
 cache = None
 db_file_path = ''
+request_count = 0
+average_processing_time = 0.0
+
 LOG_FILE = 'app.log'
 LOG_FOLDER = 'logs'
+
+
+@app.before_request
+def start_timer():
+    request.start_time = time.time()
+
+
+@app.after_request
+def end_timer(response):
+    processing_time = time.time() - request.start_time
+    app.logger.debug(f'Processing time: {processing_time:.5f} seconds')
+    return response
 
 
 @app.route('/api/v1/stats', methods=['GET'])
@@ -32,7 +48,10 @@ def vm():
     if not (data := cache.get(vm_id)):
         data = model.get_source_vms(db_file_path, vm_id)
         cache.put(vm_id, data)
+
     app.logger.info("/vm endpoint called with vm_id: "+vm_id)
+    # app.logger.debug('blablabla')
+
     return jsonify(data)
 
 
@@ -47,7 +66,7 @@ if __name__ == '__main__':
 
     vms_count = model.count_vms(db_file_path)
     cache = LRUCache(max(int(vms_count * 70 / 100), 1))
-    logging.basicConfig(filename=LOG_FILE, level=logging.INFO)
+    logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG)
     logger = logging.getLogger(__name__)
 
     app.run(port=80)
