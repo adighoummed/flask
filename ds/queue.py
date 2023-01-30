@@ -35,7 +35,7 @@ class Queue:
         return new_node
 
     def dequeue_from_last(self) -> str:
-        if not self.tail:
+        if self.tail:
             key = self.tail.key
             if self.head == self.tail:
                 self.head = None
@@ -52,12 +52,23 @@ class Queue:
         if self.head == node:
             return
         if self.tail == node:
-            self.dequeue_from_last()
-            self.enqueue_at_first(node.key, node.data)
+            self.tail = self.tail.prev
+            self.tail.next = None
+
+            node.next = self.head
+            node.prev = None
+
+            self.head.prev = node
+            self.head = self.head.prev
         else:
             node.prev.next = node.next
             node.next.prev = node.prev
-            self.enqueue_at_first(node.key, node.data)
+
+            node.next = self.head
+            node.prev = None
+
+            self.head.prev = node
+            self.head = self.head.prev
 
     def get_size(self) -> int:
         return self.size

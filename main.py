@@ -10,14 +10,15 @@ from flask import Flask, jsonify, request
 import model
 from ds.lru_cache import LRUCache
 
+MESSAGE_FORMAT = '%(asctime)s [%(levelname)s] %(name)s - %(message)s'
+LOG_FILE = 'app.log'
+LOG_FOLDER = 'logs'
+
 app = Flask(__name__)
 cache = None
 db_file_path = ''
 request_count = 0
 total_processing_time = 0.0
-
-LOG_FILE = 'app.log'
-LOG_FOLDER = 'logs'
 
 
 @app.before_request
@@ -40,7 +41,7 @@ def end_timer(response):
 
 @app.route('/api/v1/stats', methods=['GET'])
 def stats():
-    average_request_time = total_processing_time / request_count
+    average_request_time = total_processing_time / request_count if request_count else 0.0
     data = {
         "vm_count": vm_count,
         "request_count": request_count,
@@ -53,7 +54,12 @@ def stats():
 @app.route('/api/v1/attack', methods=['GET'])
 def vm():
     vm_id = request.args.get('vm_id')
+    if not model.vm_exists(db_file_path, vm_id):
+        error_message = f'{vm_id=} does not exit in DB'
+        app.logger.debug(error_message)
+        return jsonify(error_message)
     if not (data := cache.get(vm_id)):
+        app.logger.debug(f"{vm_id=} was not found in cache")
         data = model.get_source_vms(db_file_path, vm_id)
         cache.put(vm_id, data)
 
@@ -71,9 +77,11 @@ if __name__ == '__main__':
         print("[ERROR]: The file path provided does not exist.")
         sys.exit(1)
 
+    print(model.validate_json_file_structure(db_file_path))
+
     vm_count = model.count_vms(db_file_path)
     cache = LRUCache(max(int(vm_count * 70 / 100), 1))
-    logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(name)s - %(message)s')
+    logging.basicConfig(filename=LOG_FILE, level=logging.DEBUG, format=MESSAGE_FORMAT)
     logger = logging.getLogger(__name__)
 
     app.run(port=80)
