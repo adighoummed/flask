@@ -77,7 +77,9 @@ if __name__ == '__main__':
         print("[ERROR]: The file path provided does not exist.")
         sys.exit(1)
 
-    print(model.validate_json_file_structure(db_file_path))
+    if not model.validate_json_file_structure(db_file_path) or not model.validate_json_file_logic(db_file_path):
+        print("[ERROR]: The JSON file provided as a DB is invalid")
+        sys.exit(1)
 
     vm_count = model.count_vms(db_file_path)
     cache = LRUCache(max(int(vm_count * 70 / 100), 1))

@@ -1,0 +1,145 @@
+{
+    "vms": [
+        {
+            "vm_id": "vm-1",
+            "name": "vm-1",
+            "tags": [
+                "vm-1"
+            ]
+        },
+        {
+            "vm_id": "vm-2",
+            "name": "vm-2",
+            "tags": [
+                "vm-2"
+            ]
+        },{
+            "vm_id": "vm-3",
+            "name": "vm-3",
+            "tags": [
+                "vm-3"
+            ]
+        },{
+            "vm_id": "vm-4",
+            "name": "vm-4",
+            "tags": [
+                "vm-4"
+            ]
+        },{
+            "vm_id": "vm-5",
+            "name": "vm-5",
+            "tags": [
+                "vm-5"
+            ]
+        },{
+            "vm_id": "vm-6",
+            "name": "vm-5",
+            "tags": [
+                "vm-6"
+            ]
+        }
+    ],
+    "fw_rules": [
+        {
+            "fw_id": "fw-1",
+            "source_tag": "vm-1",
+            "dest_tag": "vm-2"
+        },{
+            "fw_id": "fw-2",
+            "source_tag": "vm-1",
+            "dest_tag": "vm-3"
+        },{
+            "fw_id": "fw-3",
+            "source_tag": "vm-1",
+            "dest_tag": "vm-4"
+        },{
+            "fw_id": "fw-4",
+            "source_tag": "vm-1",
+            "dest_tag": "vm-5"
+        },{
+            "fw_id": "fw-5",
+            "source_tag": "vm-2",
+            "dest_tag": "vm-1"
+        },{
+            "fw_id": "fw-6",
+            "source_tag": "vm-2",
+            "dest_tag": "vm-3"
+        },{
+            "fw_id": "fw-7",
+            "source_tag": "vm-2",
+            "dest_tag": "vm-4"
+        },{
+            "fw_id": "fw-8",
+            "source_tag": "vm-2",
+            "dest_tag": "vm-5"
+        },{
+            "fw_id": "fw-9",
+            "source_tag": "vm-3",
+            "dest_tag": "vm-1"
+        },{
+            "fw_id": "fw-10",
+            "source_tag": "vm-3",
+            "dest_tag": "vm-2"
+        },{
+            "fw_id": "fw-11",
+            "source_tag": "vm-3",
+            "dest_tag": "vm-4"
+        },{
+            "fw_id": "fw-12",
+            "source_tag": "vm-3",
+            "dest_tag": "vm-5"
+        },{
+            "fw_id": "fw-13",
+            "source_tag": "vm-4",
+            "dest_tag": "vm-1"
+        },{
+            "fw_id": "fw-14",
+            "source_tag": "vm-4",
+            "dest_tag": "vm-2"
+        },{
+            "fw_id": "fw-15",
+            "source_tag": "vm-4",
+            "dest_tag": "vm-3"
+        },{
+            "fw_id": "fw-16",
+            "source_tag": "vm-4",
+            "dest_tag": "vm-5"
+        },{
+            "fw_id": "fw-17",
+            "source_tag": "vm-5",
+            "dest_tag": "vm-1"
+        },{
+            "fw_id": "fw-18",
+            "source_tag": "vm-5",
+            "dest_tag": "vm-2"
+        },{
+            "fw_id": "fw-19",
+            "source_tag": "vm-5",
+            "dest_tag": "vm-3"
+        },{
+            "fw_id": "fw-20",
+            "source_tag": "vm-5",
+            "dest_tag": "vm-4"
+        },{
+            "fw_id": "fw-21",
+            "source_tag": "vm-6",
+            "dest_tag": "vm-1"
+        },{
+            "fw_id": "fw-22",
+            "source_tag": "vm-6",
+            "dest_tag": "vm-2"
+        },{
+            "fw_id": "fw-23",
+            "source_tag": "vm-6",
+            "dest_tag": "vm-3"
+        },{
+            "fw_id": "fw-24",
+            "source_tag": "vm-6",
+            "dest_tag": "vm-4"
+        },{
+            "fw_id": "fw-25",
+            "source_tag": "vm-6",
+            "dest_tag": "vm-5"
+        }
+    ]
+}

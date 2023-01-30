@@ -1,14 +1,24 @@
+from typing import List, Generator, Any
+
 import ijson
 
 
-def _parse_json_file(file_path):
+def _parse_json_file(file_path: str) -> Generator[Any, Any, Any]:
     with open(file_path, 'r') as f:
         parser = ijson.parse(f)
         for prefix, event, value in parser:
             yield prefix, event, value
 
 
-def validate_json_file_structure(file_path):
+def validate_json_file_logic(file_path: str) -> bool:
+    if count_fw_rules(file_path) and not count_vms(file_path):
+        return False
+    # some other validations might be added here
+
+    return True
+
+
+def validate_json_file_structure(file_path: str) -> bool:
     prefix_string_dict = {
         'vms': ('vm_id', 'name', 'tags'),
         'fw_rules': ('fw_id', 'source_tag', 'dest_tag')
@@ -79,7 +89,7 @@ def validate_json_file_structure(file_path):
     return False if stack else True
 
 
-def _get_target_tags(file_path, vm_id):
+def _get_target_tags(file_path: str, vm_id: str) -> List[str]:
     vm_found = False
     tags_found = False
     tags = []
@@ -97,9 +107,8 @@ def _get_target_tags(file_path, vm_id):
     return tags
 
 
-def _get_source_tags(file_path, vm_id):
+def _get_source_tags(file_path: str, vm_id: str) -> List[str]:
     vm_tags = _get_target_tags(file_path, vm_id)
-    print(f'{vm_tags=}')
     source_tags = []
     source_tag = ''
 
@@ -114,7 +123,7 @@ def _get_source_tags(file_path, vm_id):
     return source_tags
 
 
-def get_source_vms(file_path, vm_id):
+def get_source_vms(file_path: str, vm_id: str) -> List[str]:
     source_tags = _get_source_tags(file_path, vm_id)
     vms = []
 
@@ -131,19 +140,27 @@ def get_source_vms(file_path, vm_id):
     return vms
 
 
-def count_vms(file_path):
-    vms = 0
+def count_vms(file_path: str) -> int:
+    return _count_objects_in_array(file_path, 'vms', 'vm_id')
+
+
+def count_fw_rules(file_path: str) -> int:
+    return _count_objects_in_array(file_path, 'fw_rules', 'fw_id')
+
+
+def _count_objects_in_array(file_path: str, object_prefix: str, key: str) -> int:
+    objects = 0
 
     for prefix, event, value in _parse_json_file(file_path):
-        if prefix == 'vms' and event == 'end_array':
+        if prefix == object_prefix and event == 'end_array':
             break
-        elif prefix == 'vms.item.vm_id':
-            vms += 1
+        elif prefix == f'{object_prefix}.item.{key}':
+            objects += 1
 
-    return vms
+    return objects
 
 
-def vm_exists(file_path, vm_id):
+def vm_exists(file_path: str, vm_id: str) -> bool:
     for prefix, event, value in _parse_json_file(file_path):
         if prefix == 'vms' and event == 'end_array':
             return False

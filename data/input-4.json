@@ -1,0 +1,20 @@
+{
+    "vms": [
+        {
+            "vm_id": "vm-a211de",
+            "name": "jira_server",
+            "tags": [
+                "ci"
+            ]
+        },
+        {
+            "vm_id": "vm-c7bac01a07",
+            "name": "bastion",
+            "tags": [
+                "ssh",
+                "dev"
+            ]
+        }
+    ],
+    "fw_rules": []
+}

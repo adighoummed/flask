@@ -1,0 +1,10 @@
+{
+    "vms": [],
+    "fw_rules": [
+        {
+            "fw_id": "fw-82af742",
+            "source_tag": "ssh",
+            "dest_tag": "dev"
+        }
+    ]
+}
